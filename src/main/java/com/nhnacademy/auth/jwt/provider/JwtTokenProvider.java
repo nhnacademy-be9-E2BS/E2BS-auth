@@ -66,7 +66,7 @@ public class JwtTokenProvider {
 	 */
 	private Map<String, Object> createClaims(User user) {
 		Map<String, Object> claims = new HashMap<>();
-		claims.put("Identifier", user.getUsername());
+		claims.put("MemberId", user.getUsername());
 		claims.put("Role", user.getAuthorities()
 			.stream()
 			.map(GrantedAuthority::getAuthority)
