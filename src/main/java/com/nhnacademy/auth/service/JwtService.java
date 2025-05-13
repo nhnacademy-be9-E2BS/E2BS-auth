@@ -6,7 +6,6 @@ import java.util.List;
 import javax.crypto.SecretKey;
 
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
@@ -18,7 +17,9 @@ import com.nhnacademy.auth.model.dto.response.ResponseJwtTokenDTO;
 
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class JwtService {
@@ -42,22 +43,15 @@ public class JwtService {
 			List.of(new SimpleGrantedAuthority(request.getMemberRole()))
 		);
 
-		String accessToken = jwtTokenProvider.provideAccessToken(accessSecretKey, accessExpiration, user);
-		String refreshToken = jwtTokenProvider.provideRefreshToken(refreshSecretKey, refreshExpiration, user);
-
 		/**
 		 * Http 응답 쿠키로 클라이언트에 내려주는 구문
+		 *
+		 * 원래는 auth에서 바로 쿠키를 생성해줬으나 서버 자체가 달라서 다른 서버에서 쿠키 값을 공유할 수 없다
+		 * Front로 accessToken 값을 보내주고 Front 브라우저에서 해당 쿠키를 만든다
+		 *
 		 */
-		ResponseCookie accessCookie = ResponseCookie.from(JwtRule.ACCESS_PREFIX.getValue(), accessToken)
-			.httpOnly(true)    // 자바스크립트가 접근할 수 없게 하여 XSS 공격 방어한다
-			.secure(true)        // HTTPS 에서만 전송되도록 한다
-			.sameSite("None")    // 크로스 도메인 요청에서도 쿠키를 보내도록 설정한다
-			.path("/")            // 쿠키가 유효한 경로를 지정한다 ("/"는 전체 경로에서 접근 가능)
-			.maxAge(Duration.ofMillis(accessExpiration)) // 유효시간 10분
-			.build();
-		// 응답 헤더에 쿠키를 추가
-		// HTTP 응답 헤더에 Set-Cookie 가 포함되고 브라우저는 응답을 받는 즉시 해당 쿠키를 저장한다
-		response.addHeader(JwtRule.JWT_ISSUE_HEADER.getValue(), accessCookie.toString());
+		String accessToken = jwtTokenProvider.provideAccessToken(accessSecretKey, accessExpiration, user);
+		String refreshToken = jwtTokenProvider.provideRefreshToken(refreshSecretKey, refreshExpiration, user);
 
 		// Redis 에 토큰을 저장
 		String redisKey = JwtRule.REFRESH_PREFIX.getValue() + ":" + request.getMemberId();

@@ -1,6 +1,8 @@
 package com.nhnacademy.auth.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,14 +30,17 @@ public class AuthController {
 	 * front에서 JWT Token create 요청이 오면 요청을 처리하는 RestController
 	 */
 	@PostMapping
-	public ResponseJwtTokenDTO createJwtToken(@Validated @RequestBody RequestJwtTokenDTO requestJwtTokenDTO,
+	public ResponseEntity<ResponseJwtTokenDTO> createJwtToken(
+		@Validated @RequestBody RequestJwtTokenDTO requestJwtTokenDTO,
 		BindingResult bindingResult,
 		HttpServletResponse response) {
 		if (bindingResult.hasErrors()) {
 			throw new ValidationFailedException(bindingResult);
 		}
 
-		return jwtService.saveToken(requestJwtTokenDTO, response);
+		ResponseJwtTokenDTO responseJwtTokenDTO = jwtService.saveToken(requestJwtTokenDTO, response);
+
+		return ResponseEntity.status(HttpStatus.CREATED).body(responseJwtTokenDTO);
 	}
 
 }
