@@ -10,8 +10,8 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
-import com.nhnacademy.auth.jwt.JwtRule;
 import com.nhnacademy.auth.jwt.provider.JwtTokenProvider;
+import com.nhnacademy.auth.jwt.rule.JwtRule;
 import com.nhnacademy.auth.model.dto.request.RequestJwtTokenDTO;
 import com.nhnacademy.auth.model.dto.response.ResponseJwtTokenDTO;
 

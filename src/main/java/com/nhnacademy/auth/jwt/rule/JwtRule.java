@@ -1,4 +1,4 @@
-package com.nhnacademy.auth.jwt;
+package com.nhnacademy.auth.jwt.rule;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
