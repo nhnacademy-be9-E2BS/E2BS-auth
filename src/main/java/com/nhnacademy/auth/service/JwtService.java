@@ -15,6 +15,7 @@ import com.nhnacademy.auth.jwt.rule.JwtRule;
 import com.nhnacademy.auth.model.dto.request.RequestJwtTokenDTO;
 import com.nhnacademy.auth.model.dto.response.ResponseJwtTokenDTO;
 
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -50,14 +51,24 @@ public class JwtService {
 		 * Front로 accessToken 값을 보내주고 Front 브라우저에서 해당 쿠키를 만든다
 		 *
 		 */
-		String accessToken = jwtTokenProvider.provideAccessToken(accessSecretKey, accessExpiration, user);
-		String refreshToken = jwtTokenProvider.provideRefreshToken(refreshSecretKey, refreshExpiration, user);
+		String accessToken = jwtTokenProvider.provideAccessToken(accessSecretKey,
+			accessExpiration, user); // accessExpiration 시간 10분 저장
+		String refreshToken = jwtTokenProvider.provideRefreshToken(refreshSecretKey,
+			refreshExpiration, user); // accessExpiration 시간 3시간 저장
+
+		Cookie accessCookie = new Cookie(JwtRule.JWT_ISSUE_HEADER.getValue(), accessToken);
+		accessCookie.setHttpOnly(true);
+		accessCookie.setSecure(true);
+		accessCookie.setPath("/");
+		accessCookie.setMaxAge(600); // 10분
+
+		response.addCookie(accessCookie); // 헤더에 쿠키 정보 저장
 
 		// Redis 에 토큰을 저장
 		String redisKey = JwtRule.REFRESH_PREFIX.getValue() + ":" + request.getMemberId();
 		redisTemplate.opsForValue().set(redisKey, refreshToken, Duration.ofMillis(refreshExpiration));
 
-		return new ResponseJwtTokenDTO(accessToken, refreshToken);
+		return new ResponseJwtTokenDTO("Success");
 	}
 
 }

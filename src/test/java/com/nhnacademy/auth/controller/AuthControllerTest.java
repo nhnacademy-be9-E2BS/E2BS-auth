@@ -34,7 +34,7 @@ class AuthControllerTest {
 
 		// Given
 		RequestJwtTokenDTO requestDto = new RequestJwtTokenDTO("nhn1", "ROLE_USER");
-		ResponseJwtTokenDTO responseDto = new ResponseJwtTokenDTO("access", "refresh");
+		ResponseJwtTokenDTO responseDto = new ResponseJwtTokenDTO("success");
 
 		// When
 		// Mockito.when(jwtService.saveToken(any(RequestJwtTokenDTO.class), any(HttpServletResponse.class)))
