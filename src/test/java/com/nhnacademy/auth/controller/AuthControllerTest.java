@@ -33,7 +33,7 @@ class AuthControllerTest {
 	void successCreateJwtToken() throws Exception {
 
 		// Given
-		RequestJwtTokenDTO requestDto = new RequestJwtTokenDTO("nhn1", "ROLE_USER");
+		RequestJwtTokenDTO requestDto = new RequestJwtTokenDTO("nhn1");
 		ResponseJwtTokenDTO responseDto = new ResponseJwtTokenDTO("success");
 
 		// When

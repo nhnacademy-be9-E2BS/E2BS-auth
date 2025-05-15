@@ -12,7 +12,5 @@ public class RequestJwtTokenDTO {
 
 	@NotNull
 	private String memberId;
-	@NotNull
-	private String memberRole;
 
 }

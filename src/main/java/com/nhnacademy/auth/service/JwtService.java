@@ -6,7 +6,6 @@ import java.util.List;
 import javax.crypto.SecretKey;
 
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
@@ -31,8 +30,8 @@ public class JwtService {
 	private final SecretKey accessSecretKey;
 	private final SecretKey refreshSecretKey;
 
-	private final long accessExpiration = 600000;
-	private final long refreshExpiration = 3600000;
+	private final long accessExpiration = 1800; // 30분
+	private final long refreshExpiration = 10800; // 3시간
 
 	/**
 	 * AccessToken, RefreshToken 을 생성하고 쿠키와 레디스에 저장해서 응답하는 서비스 로직
@@ -40,8 +39,8 @@ public class JwtService {
 	public ResponseJwtTokenDTO saveToken(RequestJwtTokenDTO request, HttpServletResponse response) {
 
 		User user = new User(request.getMemberId(),
-			"notUsePassword",
-			List.of(new SimpleGrantedAuthority(request.getMemberRole()))
+			"NotUsePassword",
+			List.of()
 		);
 
 		/**
@@ -60,7 +59,7 @@ public class JwtService {
 		accessCookie.setHttpOnly(true);
 		accessCookie.setSecure(true);
 		accessCookie.setPath("/");
-		accessCookie.setMaxAge(600); // 10분
+		accessCookie.setMaxAge(10800); // 쿠키 유지 시간은 1시간, Access Token expiration 시간은 10분
 
 		response.addCookie(accessCookie); // 헤더에 쿠키 정보 저장
 

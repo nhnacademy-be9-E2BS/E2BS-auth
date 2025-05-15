@@ -50,7 +50,7 @@ class JwtServiceTest {
 	void successSaveTokenTest() throws Exception {
 
 		// Given
-		RequestJwtTokenDTO requestJwtTokenDTO = new RequestJwtTokenDTO("nhn1", "ROLE_USER");
+		RequestJwtTokenDTO requestJwtTokenDTO = new RequestJwtTokenDTO("nhn1");
 		String accessToken = "access";
 		String refreshToken = "refresh";
 
