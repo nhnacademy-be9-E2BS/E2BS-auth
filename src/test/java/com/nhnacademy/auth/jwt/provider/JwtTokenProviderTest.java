@@ -30,7 +30,7 @@ class JwtTokenProviderTest {
 
 	@Test
 	@DisplayName("Access Token이 Claim을 가지고 있는지 테스트")
-	void provideAccessTokenContainClaimTest() throws Exception {
+	void provideAccessTokenContainClaimTest() {
 
 		// Given
 		User user = new User("nhn1", "1234", List.of(new SimpleGrantedAuthority("ROLE_USER")));
@@ -46,13 +46,13 @@ class JwtTokenProviderTest {
 			.getBody();
 
 		Assertions.assertThat(claims.getSubject()).isEqualTo("nhn1");
-		Assertions.assertThat(claims.get("MemberId")).isEqualTo("nhn1");
+		org.junit.jupiter.api.Assertions.assertEquals("nhn1", claims.get("MemberId"));
 		Assertions.assertThat(claims.getExpiration()).isAfter(new Date());
 	}
 
 	@Test
 	@DisplayName("Refresh Token에 최소한의 정보만 담기는지 테스트")
-	void provideRefreshTokenContainSubjectTest() throws Exception {
+	void provideRefreshTokenContainSubjectTest() {
 
 		// Given
 		User user = new User("nhn1", "1234", List.of(new SimpleGrantedAuthority("ROLE_USER")));
@@ -69,7 +69,7 @@ class JwtTokenProviderTest {
 
 		Assertions.assertThat(claims.getSubject()).isEqualTo("nhn1");
 		Assertions.assertThat(claims.get("Role")).isNull();
-		Assertions.assertThat(claims.get("Identifier")).isNull();
+		Assertions.assertThat(claims.get("MemberId")).isNull();
 
 	}
 

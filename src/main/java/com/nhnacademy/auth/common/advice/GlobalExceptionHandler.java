@@ -17,10 +17,10 @@ public class GlobalExceptionHandler {
 	 * 이미 존재하는 경우의 에러 핸들러
 	 */
 	@ExceptionHandler({ValidationFailedException.class})
-	public ResponseEntity<?> handleAlreadyExistsException(Exception ex) {
+	public ResponseEntity<Void> handleAlreadyExistsException(Exception ex) {
 		ResponseGlobalExceptionDTO body = new ResponseGlobalExceptionDTO(ex.getMessage(),
 			HttpStatus.BAD_REQUEST.value(), LocalDateTime.now());
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 	}
 
 }

@@ -30,8 +30,8 @@ public class JwtService {
 	private final SecretKey accessSecretKey;
 	private final SecretKey refreshSecretKey;
 
-	private final long accessExpiration = 1800; // 30분
-	private final long refreshExpiration = 10800; // 3시간
+	private static final long accessExpiration = 1800; // 30분
+	private static final long refreshExpiration = 10800; // 3시간
 
 	/**
 	 * AccessToken, RefreshToken 을 생성하고 쿠키와 레디스에 저장해서 응답하는 서비스 로직
@@ -39,7 +39,7 @@ public class JwtService {
 	public ResponseJwtTokenDTO saveToken(RequestJwtTokenDTO request, HttpServletResponse response) {
 
 		User user = new User(request.getMemberId(),
-			"NotUsePassword",
+			"1234",
 			List.of()
 		);
 

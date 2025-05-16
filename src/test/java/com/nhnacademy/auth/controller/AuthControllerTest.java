@@ -14,7 +14,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nhnacademy.auth.model.dto.request.RequestJwtTokenDTO;
-import com.nhnacademy.auth.model.dto.response.ResponseJwtTokenDTO;
 import com.nhnacademy.auth.service.JwtService;
 
 @WebMvcTest(AuthController.class)
@@ -34,11 +33,6 @@ class AuthControllerTest {
 
 		// Given
 		RequestJwtTokenDTO requestDto = new RequestJwtTokenDTO("nhn1");
-		ResponseJwtTokenDTO responseDto = new ResponseJwtTokenDTO("success");
-
-		// When
-		// Mockito.when(jwtService.saveToken(any(RequestJwtTokenDTO.class), any(HttpServletResponse.class)))
-		// 	.thenReturn(responseDto);
 
 		// Then
 		mockMvc.perform(post("/api/auth")

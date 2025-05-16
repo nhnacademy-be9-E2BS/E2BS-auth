@@ -1,6 +1,5 @@
 package com.nhnacademy.auth.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -23,8 +22,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/auth")
 public class AuthController {
 
-	@Autowired
-	private JwtService jwtService;
+	private final JwtService jwtService;
 
 	/**
 	 * front에서 JWT Token create 요청이 오면 요청을 처리하는 RestController
