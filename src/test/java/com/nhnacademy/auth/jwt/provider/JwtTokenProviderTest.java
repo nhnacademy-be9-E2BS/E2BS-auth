@@ -46,7 +46,7 @@ class JwtTokenProviderTest {
 			.getBody();
 
 		Assertions.assertThat(claims.getSubject()).isEqualTo("nhn1");
-		Assertions.assertThat(claims.get("Identifier")).isEqualTo("nhn1");
+		Assertions.assertThat(claims.get("MemberId")).isEqualTo("nhn1");
 		Assertions.assertThat(claims.getExpiration()).isAfter(new Date());
 	}
 

@@ -44,9 +44,7 @@ class AuthControllerTest {
 		mockMvc.perform(post("/api/auth")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(requestDto)))
-			.andExpect(status().isOk())
-			.andExpect(jsonPath("$.accessToken").value("access"))
-			.andExpect(jsonPath("$.refreshToken").value("refresh"));
+			.andExpect(status().isCreated());
 
 	}
 

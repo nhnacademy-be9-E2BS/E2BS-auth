@@ -58,12 +58,6 @@ class JwtServiceTest {
 		when(jwtTokenProvider.provideAccessToken(any(), anyLong(), any())).thenReturn(accessToken);
 		when(jwtTokenProvider.provideRefreshToken(any(), anyLong(), any())).thenReturn(refreshToken);
 
-		//		ResponseJwtTokenDTO responseJwtTokenDTO = jwtService.saveToken(requestJwtTokenDTO, response);
-
-		// Then
-		//		assertThat(responseJwtTokenDTO.getAccessToken()).isEqualTo(accessToken);
-		//		assertThat(responseJwtTokenDTO.getRefreshToken()).isEqualTo(refreshToken);
-
 	}
 
 }
