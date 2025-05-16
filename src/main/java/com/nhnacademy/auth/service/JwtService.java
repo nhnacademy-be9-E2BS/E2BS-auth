@@ -39,7 +39,7 @@ public class JwtService {
 	public ResponseJwtTokenDTO saveToken(RequestJwtTokenDTO request, HttpServletResponse response) {
 
 		User user = new User(request.getMemberId(),
-			"temp-test-password",
+			"$2a$10$hSdx4EexRI2NfRRnAV8MX.OToZc3bfPXrR1p0tHxxjTa3JknV4bxK",
 			List.of()
 		);
 

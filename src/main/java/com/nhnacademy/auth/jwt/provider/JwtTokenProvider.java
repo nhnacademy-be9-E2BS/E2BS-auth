@@ -20,29 +20,29 @@ public class JwtTokenProvider {
 	/**
 	 * Access Token 발급하는 메서드
 	 */
-	public String provideAccessToken(final Key AccessSecret, final long AccessEXPIRATION, User user) {
+	public String provideAccessToken(final Key accessSecret, final long accessEXPIRATION, User user) {
 		long now = System.currentTimeMillis();
 
 		return Jwts.builder()
 			.setHeader(createHeader())
 			.setClaims(createClaims(user))
 			.setSubject(String.valueOf(user.getUsername()))
-			.setExpiration(new Date(now + AccessEXPIRATION))
-			.signWith(AccessSecret, SignatureAlgorithm.HS256)
+			.setExpiration(new Date(now + accessEXPIRATION))
+			.signWith(accessSecret, SignatureAlgorithm.HS256)
 			.compact();
 	}
 
 	/**
 	 * Refresh Token 발급하는 메서드
 	 */
-	public String provideRefreshToken(final Key RefreshSecret, final long RefreshExpiration, User user) {
+	public String provideRefreshToken(final Key refreshSecret, final long refreshExpiration, User user) {
 		long now = System.currentTimeMillis();
 
 		return Jwts.builder()
 			.setHeader(createHeader())
 			.setSubject(user.getUsername())
-			.setExpiration(new Date(now + RefreshExpiration))
-			.signWith(RefreshSecret, SignatureAlgorithm.HS256)
+			.setExpiration(new Date(now + refreshExpiration))
+			.signWith(refreshSecret, SignatureAlgorithm.HS256)
 			.compact();
 	}
 
