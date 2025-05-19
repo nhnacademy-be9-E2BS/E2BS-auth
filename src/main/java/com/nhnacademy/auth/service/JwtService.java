@@ -30,8 +30,8 @@ public class JwtService {
 	private final SecretKey accessSecretKey;
 	private final SecretKey refreshSecretKey;
 
-	private static final long accessExpiration = 1800; // 30분
-	private static final long refreshExpiration = 10800; // 3시간
+	private static final long accessExpiration = 1800000; // 30분
+	private static final long refreshExpiration = 10800000; // 3시간
 
 	/**
 	 * AccessToken, RefreshToken 을 생성하고 쿠키와 레디스에 저장해서 응답하는 서비스 로직
@@ -59,7 +59,7 @@ public class JwtService {
 		accessCookie.setHttpOnly(true);
 		accessCookie.setSecure(true);
 		accessCookie.setPath("/");
-		accessCookie.setMaxAge(10800); // 쿠키 유지 시간은 1시간, Access Token expiration 시간은 10분
+		accessCookie.setMaxAge(10800000); // 쿠키 유지 시간은 1시간, Access Token expiration 시간은 10분
 
 		response.addCookie(accessCookie); // 헤더에 쿠키 정보 저장
 
