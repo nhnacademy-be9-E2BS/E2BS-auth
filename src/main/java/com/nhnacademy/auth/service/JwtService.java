@@ -30,8 +30,8 @@ public class JwtService {
 	private final SecretKey accessSecretKey;
 	private final SecretKey refreshSecretKey;
 
-	private static final long accessExpiration = 1800000; // 30분
-	private static final long refreshExpiration = 10800000; // 3시간
+	private static final long ACCESS_EXPIRATION = 1800000; // 30분
+	private static final long REFRESH_EXPIRATION = 10800000; // 3시간
 
 	/**
 	 * AccessToken, RefreshToken 을 생성하고 쿠키와 레디스에 저장해서 응답하는 서비스 로직
@@ -39,7 +39,7 @@ public class JwtService {
 	public ResponseJwtTokenDTO saveToken(RequestJwtTokenDTO request, HttpServletResponse response) {
 
 		User user = new User(request.getMemberId(),
-			"$2a$10$hSdx4EexRI2NfRRnAV8MX.OToZc3bfPXrR1p0tHxxjTa3JknV4bxK",
+			"$2a$10$Wz3Dv4T6YuO5Qm9rkQYELuR.FPnkJWaHU8NjWZmkf38ZDeT1A0n3G",
 			List.of()
 		);
 
@@ -51,9 +51,9 @@ public class JwtService {
 		 *
 		 */
 		String accessToken = jwtTokenProvider.provideAccessToken(accessSecretKey,
-			accessExpiration, user); // accessExpiration 시간 10분 저장
+			ACCESS_EXPIRATION, user); // accessExpiration 시간 10분 저장
 		String refreshToken = jwtTokenProvider.provideRefreshToken(refreshSecretKey,
-			refreshExpiration, user); // accessExpiration 시간 3시간 저장
+			REFRESH_EXPIRATION, user); // accessExpiration 시간 3시간 저장
 
 		Cookie accessCookie = new Cookie(JwtRule.JWT_ISSUE_HEADER.getValue(), accessToken);
 		accessCookie.setHttpOnly(true);
@@ -65,7 +65,7 @@ public class JwtService {
 
 		// Redis 에 토큰을 저장
 		String redisKey = JwtRule.REFRESH_PREFIX.getValue() + ":" + request.getMemberId();
-		redisTemplate.opsForValue().set(redisKey, refreshToken, Duration.ofMillis(refreshExpiration));
+		redisTemplate.opsForValue().set(redisKey, refreshToken, Duration.ofMillis(REFRESH_EXPIRATION));
 
 		return new ResponseJwtTokenDTO("Success");
 	}
