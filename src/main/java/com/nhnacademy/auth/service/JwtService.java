@@ -41,7 +41,7 @@ public class JwtService {
 	 */
 	public ResponseJwtTokenDTO saveToken(RequestJwtTokenDTO request, HttpServletResponse response) {
 
-		String encodedDummyPassword = passwordEncoder.encode("Dummy_Secret_4392!");
+		String encodedDummyPassword = passwordEncoder.encode("B7gf9Hn4s1c8XKLo6qTJzA!");
 
 		User user = new User(request.getMemberId(),
 			encodedDummyPassword,
