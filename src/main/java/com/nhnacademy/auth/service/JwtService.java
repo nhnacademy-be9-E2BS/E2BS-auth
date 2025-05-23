@@ -7,6 +7,7 @@ import javax.crypto.SecretKey;
 
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.nhnacademy.auth.jwt.provider.JwtTokenProvider;
@@ -33,13 +34,17 @@ public class JwtService {
 	private static final long ACCESS_EXPIRATION = 1800000; // 30분
 	private static final long REFRESH_EXPIRATION = 10800000; // 3시간
 
+	private final PasswordEncoder passwordEncoder;
+
 	/**
 	 * AccessToken, RefreshToken 을 생성하고 쿠키와 레디스에 저장해서 응답하는 서비스 로직
 	 */
 	public ResponseJwtTokenDTO saveToken(RequestJwtTokenDTO request, HttpServletResponse response) {
 
+		String encodedDummyPassword = passwordEncoder.encode("Test@1234");
+
 		User user = new User(request.getMemberId(),
-			"$2a$10$Wz3Dv4T6YuO5Qm9rkQYELuR.FPnkJWaHU8NjWZmkf38ZDeT1A0n3G",
+			encodedDummyPassword,
 			List.of()
 		);
 
