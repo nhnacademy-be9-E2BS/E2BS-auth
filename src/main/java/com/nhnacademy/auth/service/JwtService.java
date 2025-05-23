@@ -1,6 +1,8 @@
 package com.nhnacademy.auth.service;
 
+import java.security.SecureRandom;
 import java.time.Duration;
+import java.util.Base64;
 import java.util.List;
 
 import javax.crypto.SecretKey;
@@ -40,8 +42,12 @@ public class JwtService {
 	 * AccessToken, RefreshToken 을 생성하고 쿠키와 레디스에 저장해서 응답하는 서비스 로직
 	 */
 	public ResponseJwtTokenDTO saveToken(RequestJwtTokenDTO request, HttpServletResponse response) {
+		SecureRandom secureRandom = new SecureRandom();
+		byte[] randomBytes = new byte[16];
+		secureRandom.nextBytes(randomBytes);
+		String randomPassword = Base64.getEncoder().encodeToString(randomBytes);
 
-		String encodedDummyPassword = passwordEncoder.encode("B7gf9Hn4s1c8XKLo6qTJzA!");
+		String encodedDummyPassword = passwordEncoder.encode(randomPassword);
 
 		User user = new User(request.getMemberId(),
 			encodedDummyPassword,
