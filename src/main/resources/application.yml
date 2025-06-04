@@ -3,6 +3,11 @@ spring:
   application:
     name: AUTH
 
+  profiles:
+    active: prod
+  config:
+    import: optional:configserver:http://localhost:10240 # config 서버 연결
+
   # Refresh Token 저장을 위한 Redis 설정
   data:
     redis:
