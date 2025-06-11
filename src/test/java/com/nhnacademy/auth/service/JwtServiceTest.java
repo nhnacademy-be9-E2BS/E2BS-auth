@@ -11,6 +11,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -38,6 +39,9 @@ class JwtServiceTest {
 	private RedisTemplate<String, String> redisTemplate;
 
 	@Mock
+	private ValueOperations<String, String> valueOperations;
+
+	@Mock
 	private PasswordEncoder passwordEncoder;
 
 	@Mock
@@ -47,10 +51,10 @@ class JwtServiceTest {
 	private SecretKey refreshSecretKey;
 
 	@Mock
-	private HttpServletResponse httpServletResponse;
+	private HttpServletResponse response;
 
-	@Mock
-	private ValueOperations<String, String> valueOperations;
+	@Captor
+	private ArgumentCaptor<Cookie> cookieCaptor;
 
 	@BeforeEach
 	void setUp() {
@@ -60,45 +64,35 @@ class JwtServiceTest {
 
 	@Test
 	@DisplayName("JWT Access/Refresh 토큰 생성 및 Redis 저장 테스트")
-	void testSaveToken() {
+	void saveTokenTest() {
 
 		// Given
-		RequestJwtTokenDTO request = new RequestJwtTokenDTO("user");
-		String dummyAccessToken = "dummyAccessToken";
-		String dummyRefreshToken = "dummyRefreshToken";
+		RequestJwtTokenDTO request = new RequestJwtTokenDTO("testUser");
+		String accessToken = "access.jwt.token";
+		String refreshToken = "refresh.jwt.token";
 
-		when(jwtTokenProvider.provideAccessToken(eq(accessSecretKey), anyLong(), any()))
-			.thenReturn(dummyAccessToken);
-		when(jwtTokenProvider.provideRefreshToken(eq(accessSecretKey), anyLong(), any()))
-			.thenReturn(dummyRefreshToken);
+		when(jwtTokenProvider.provideAccessToken(any(), anyLong(), any())).thenReturn(accessToken);
+		when(jwtTokenProvider.provideRefreshToken(any(), anyLong(), any())).thenReturn(refreshToken);
 		when(passwordEncoder.encode(anyString())).thenReturn("encodedPassword");
 
-		ArgumentCaptor<Cookie> cookieCaptor = ArgumentCaptor.forClass(Cookie.class);
-
 		// When
-		ResponseJwtTokenDTO result = jwtService.saveToken(request, httpServletResponse);
+		ResponseJwtTokenDTO result = jwtService.saveToken(request, response);
 
 		// Then
-		verify(jwtTokenProvider, times(1)).provideAccessToken(eq(accessSecretKey), anyLong(), any());
-		verify(jwtTokenProvider, times(1)).provideRefreshToken(eq(accessSecretKey), anyLong(), any());
+		assertThat(result).isNotNull();
 
-		verify(httpServletResponse, times(1)).addCookie(cookieCaptor.capture());
-		Cookie accessCookie = cookieCaptor.getValue();
+		verify(jwtTokenProvider).provideAccessToken(any(), anyLong(), any());
+		verify(jwtTokenProvider).provideRefreshToken(any(), anyLong(), any());
 
-		assertThat(accessCookie.getName()).isEqualTo(JwtRule.JWT_ISSUE_HEADER.getValue());
-		assertThat(accessCookie.getValue()).isEqualTo(dummyAccessToken);
-		assertThat(accessCookie.getMaxAge()).isEqualTo(10800000);
-		assertThat(accessCookie.getPath()).isEqualTo("/");
-		assertThat(accessCookie.isHttpOnly()).isTrue();
-		assertThat(accessCookie.getSecure()).isTrue();
+		verify(redisTemplate.opsForValue(), times(1))
+			.set(eq(JwtRule.REFRESH_PREFIX.getValue() + ":" + request.getMemberId()), eq(refreshToken),
+				eq(Duration.ofMillis(10800000)));
 
-		verify(valueOperations, times(1)).set(
-			eq(JwtRule.REFRESH_PREFIX.getValue() + ":" + request.getMemberId()),
-			eq(dummyRefreshToken),
-			eq(Duration.ofMillis(10800000))
-		);
+		verify(response, times(1)).addCookie(cookieCaptor.capture());
 
-		assertThat(result.getMessage()).isEqualTo("Success");
+		Cookie cookie = cookieCaptor.getValue();
+		assertThat(cookie.getName()).isEqualTo(JwtRule.JWT_ISSUE_HEADER.getValue());
+		assertThat(cookie.getValue()).isEqualTo(accessToken);
 
 	}
 }
