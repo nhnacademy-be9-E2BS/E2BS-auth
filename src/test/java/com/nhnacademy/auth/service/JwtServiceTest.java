@@ -85,8 +85,9 @@ class JwtServiceTest {
 		verify(jwtTokenProvider).provideRefreshToken(any(), anyLong(), any());
 
 		verify(redisTemplate.opsForValue(), times(1))
-			.set(eq(JwtRule.REFRESH_PREFIX.getValue() + ":" + request.getMemberId()), eq(refreshToken),
-				eq(Duration.ofMillis(10800000)));
+			.set(JwtRule.REFRESH_PREFIX.getValue() + ":" + request.getMemberId(),
+				refreshToken,
+				Duration.ofMillis(10800000));
 
 		verify(response, times(1)).addCookie(cookieCaptor.capture());
 
