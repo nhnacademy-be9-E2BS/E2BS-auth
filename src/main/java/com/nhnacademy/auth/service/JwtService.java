@@ -70,7 +70,7 @@ public class JwtService {
 		accessCookie.setHttpOnly(true);
 		accessCookie.setSecure(true);
 		accessCookie.setPath("/");
-		accessCookie.setMaxAge(10800000); // 쿠키 유지 시간은 1시간, Access Token expiration 시간은 10분
+		accessCookie.setMaxAge(60 * 60 * 3); // 쿠키 유지 시간은 1시간, Access Token expiration 시간은 10분
 
 		response.addCookie(accessCookie); // 헤더에 쿠키 정보 저장
 
